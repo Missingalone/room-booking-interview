@@ -36,7 +36,21 @@ public class BookingService {
     }
 
     public Booking create(String roomId, LocalDateTime start, LocalDateTime end) {
-        throw new UnsupportedOperationException("Booking creation is not implemented");
+        //roomId 合法性判断
+        requireRoom(roomId);
+
+        //时间窗口判断
+        BookingWindowResult evaluate = bookingWindowPolicy.evaluate(start, end);
+        if(evaluate != BookingWindowResult.VALID){
+            throw new InvalidBookingWindowException(evaluate);
+        }
+        //时间冲突判断
+        boolean available = availabilityService.isAvailable(roomId, start, end);
+        if(!available){
+            throw new BookingConflictException(roomId,start,end);
+        }
+        Booking booking = bookingRepository.create(roomId, start, end);
+        return booking;
     }
 
     public boolean isAvailable(String roomId, LocalDateTime start, LocalDateTime end) {
