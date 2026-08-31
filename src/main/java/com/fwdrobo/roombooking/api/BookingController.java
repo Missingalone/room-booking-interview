@@ -34,6 +34,7 @@ public class BookingController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {
-        return new AvailabilityResponse(bookingService.isAvailable(roomId, start, end));
+        AvailabilityResponse availabilityResponse = new AvailabilityResponse(bookingService.isAvailable(roomId, start, end));
+        return availabilityResponse;
     }
 }
