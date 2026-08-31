@@ -8,6 +8,9 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fwdrobo.roombooking.domain.Booking;
+import com.fwdrobo.roombooking.domain.BookingWindowResult;
+import com.fwdrobo.roombooking.service.BookingNotFoundException;
+import com.fwdrobo.roombooking.service.InvalidBookingWindowException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -37,7 +40,7 @@ public class InMemoryBookingRepository {
     public synchronized Optional<Booking> findByIdAndRoomId(String bookingId, String roomId) {
         Booking booking = bookings.get(bookingId);
         if (booking == null || !booking.roomId().equals(roomId)) {
-            return Optional.empty();
+            throw new BookingNotFoundException(roomId,bookingId);
         }
         return Optional.of(booking);
     }
